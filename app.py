@@ -1,24 +1,63 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+import os
+import re
+import numpy as np
+import pandas as pd
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
 import PyPDF2
 from docx import Document
 
-# Khởi tạo Flask App
+from flask import Flask, render_template, request, redirect, url_for, flash
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing.text import Tokenizer as KerasTokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
+
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
-# Mock model (thay thế bằng model thật của bạn)
-class MockModel:
-    def predict(self, texts):
-        return ["Category: Example"]  # Trả về một loại ví dụ
+model = load_model('models/best_model.keras')
 
-model = MockModel()
+tokenizer = KerasTokenizer(num_words=5000)
+tokenizer.fit_on_texts([])  
+
+stop_words = set(stopwords.words('english'))
+
+def preprocess_text(text):
+    text = re.sub(r'[^a-zA-Z\s]', '', text.lower())
+    words = word_tokenize(text)
+    filtered_words = [word for word in words if word not in stop_words]
+    return ' '.join(filtered_words)
+
+
+LABEL_MAP = {
+    0: 'Business',
+    1: 'Sci_Tech',
+    2: 'Sports',
+    3: 'World'
+}
+
+def predict_category(text):
+    """
+    Phân loại văn bản bằng mô hình LSTM đã huấn luyện.
+    """
+    cleaned_text = preprocess_text(text)
+    
+    sequence = tokenizer.texts_to_sequences([cleaned_text])
+    padded_sequence = pad_sequences(sequence, maxlen=150, padding='post')
+
+    prediction = model.predict(padded_sequence)
+    predicted_label = np.argmax(prediction, axis=1)[0]
+    predicted_category = LABEL_MAP.get(predicted_label, 'Unknown')
+    
+    return f"Category: {predicted_category}"
 
 def extract_text(file):
     """
     Trích xuất văn bản từ file PDF hoặc DOCX
     """
     file_ext = file.filename.split('.')[-1].lower()
-
     if file_ext == 'pdf':
         return extract_text_from_pdf(file)
     elif file_ext == 'docx':
@@ -63,7 +102,7 @@ def text_input():
     if request.method == 'POST':
         text = request.form.get('text_input')
         if text:
-            prediction = model.predict([text])[0]  # Dùng mô hình của bạn
+            prediction = predict_category(text)
             return render_template('result.html', result=prediction, input_text=text)
     return render_template('text_input.html')
 
@@ -73,8 +112,9 @@ def file_upload():
         file = request.files.get('file')
         if file:
             try:
-                content = extract_text(file)  # Trích xuất văn bản từ file
-                prediction = model.predict([content])[0]  # Dùng mô hình phân loại
+                content = extract_text(file)  
+                
+                prediction = predict_category(content)
                 return render_template('result.html', result=prediction, input_text=content)
             except ValueError as e:
                 flash(str(e), 'error')
