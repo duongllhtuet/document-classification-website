@@ -1,7 +1,3 @@
-Dưới đây là phiên bản README cho dự án của bạn:
-
----
-
 # Document Classifier 📄🔍
 
 ## Mô Tả Dự Án
@@ -74,7 +70,3 @@ Mọi đóng góp và pull request đều được chào đón!
 
 ## Giấy Phép 📄
 MIT License
-
---- 
-
-Bạn có thể thay thế tên repo trong URL clone với tên repo của mình nếu cần.
