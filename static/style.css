@@ -1,0 +1,85 @@
+/* Reset mặc định */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    /* Tăng chiều rộng container */
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    text-align: center;
+}
+
+h1 {
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    /* Tăng khoảng cách giữa các phần tử */
+}
+
+textarea,
+input[type="file"] {
+    width: 100%;
+    /* Chiều rộng đầy đủ */
+    padding: 15px;
+    /* Tăng kích thước padding để ô nhập rộng hơn */
+    font-size: 16px;
+    /* Tăng kích thước chữ */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-sizing: border-box;
+    min-height: 150px;
+    /* Đặt chiều cao tối thiểu cho textarea */
+}
+
+button {
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    color: #fff;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    /* Tăng kích thước chữ cho nút */
+}
+
+a {
+    margin-top: 20px;
+    display: inline-block;
+    color: #007bff;
+    text-decoration: none;
+}
+
+pre {
+    text-align: left;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 14px;
+    overflow-wrap: break-word;
+    max-height: 500px;
+    overflow-y: auto;
+    border-radius: 5px; /* Làm tròn góc viền */
+    background-color: #f9f9f9; /* Màu nền nhạt */
+    padding: 15px; /* Khoảng cách bên trong hộp */
+    border: 1px solid #ccc; /* Viền màu xám nhạt */
+}
